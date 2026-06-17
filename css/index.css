@@ -1,0 +1,40 @@
+pre {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1em 1.2em;
+    border-radius: 6px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+  code {
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.9em;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+  }
+.catalogue h1:first-of-type {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  width: 500px;
+  margin: 0 auto;
+  padding: 10px;
+  background: linear-gradient(135deg, #a0d8ef 30%, #e8f4f8 50%, #ffffff 70%, #e8f4f8 95%);
+  border-radius: 12px;
+  transform: translateX(30px);
+}
+
+.catalogue {
+  position: fixed;
+  top: 0;
+  width: 0px;
+  margin: 0 auto;
+  padding: 10px;
+}
+p:nth-of-type(1) {
+  margin-top: 120px;
+}
+

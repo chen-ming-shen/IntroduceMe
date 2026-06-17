@@ -1,79 +1,31 @@
-=== 2026-06-16 日记整理 ===
+=== 2026-06-17 日记整理 ===
 
-【学习进度】
-- C语言第14章：函数指针菜单系统，今日进一步优化交互体验
+【网站开发】
+- 新增画廊页面，采用瀑布屏（瀑布流）布局
 
-【代码】
+【制作过程】
 
-```c
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#define MAX 5
-#define LEN 81
-char* s_gets(char *st, int n);
-void eatline(void);
-void function_a(void);
-void function_b(void);
-void function_c(void);
-void function_d(void);
-void quit(void);
-typedef void (*VFp)(void);
-int main(void) {
-    char line[LEN];
-    char ch;
-    int i = 6;
-    VFp list[MAX] = {function_a, function_b, function_c, function_d, quit};
-    printf("\033[2J\033[H");
-    puts("Enter a string:");
-    printf("a) aaaaaa\n"
-           "b) bbbbbb\n"
-           "c) cccccc\n"
-           "d) dddddd\n"
-           "q) quit!\n");
-    while (s_gets(line, LEN) != NULL) {
-        ch = line[0];
-        switch (ch) {
-            case 'a': i = 0; break;
-            case 'b': i = 1; break;
-            case 'c': i = 2; break;
-            case 'd': i = 3; break;
-            case 'q': i = 4; break;
-            default: printf("Invalid input, try again.\n");
-        }
-        if (i < 5) list[i]();
-        printf("\n按回车键返回菜单...");
-        while (getchar() != '\n');
-        printf("\033[2J\033[H");
-        puts("Enter a string:");
-        printf("a) aaaaaa\n"
-               "b) bbbbbb\n"
-               "c) cccccc\n"
-               "d) dddddd\n"
-               "q) quit!\n");
-    }
-    return 0;
-}
-void function_a() { printf("未实现!\n"); }
-void function_b() { printf("未实现!\n"); }
-void function_c() { printf("未实现!\n"); }
-void function_d() { printf("未实现!\n"); }
-void quit() { exit(1); }
-char *s_gets(char *st, int n) {
-    char *ret_val = fgets(st, n, stdin);
-    if (ret_val) {
-        size_t idx = strcspn(st, "\n");
-        if (st[idx] == '\n') st[idx] = '\0';
-        else eatline();
-    }
-    return ret_val;
-}
-void eatline(void) { while (getchar() != '\n') continue; }
-```
+1. **选布局**
+   - 尝试 Grid 和 Flexbox，最终选用 CSS Columns（`column-count`）
+   - 固定列数，同列图片紧密贴合
 
-【改动说明】
-- 新增 `printf("\033[2J\033[H")` ANSI转义序列清屏，菜单更干净
-- `i` 初始值改为 6（越界值），配合 `if (i < 5)` 守卫，非法输入不触发任何函数
-- switch 新增 `default` 分支，提示 `"Invalid input, try again."`
-- 移除 `line[0]!='\0'` 空行退出条件，仅 `NULL`（EOF）时退出循环
-- 每次功能执行后显示「按回车键返回菜单...」，手动清缓冲后重新渲染菜单
+2. **统一图片格式**
+   - 编写 ffmpeg 脚本，批量将杂乱的图片格式转成 WebP
+   - 宽度限制 1200px
+
+3. **封装代码**
+   - 画廊 CSS 放入 `gallery.css`
+   - JS 逻辑封装成 `createGallery()` 函数，放入 `gallery.js`
+   - HTML 只需一个 div 加一行调用
+
+4. **修正小说章节页**
+   - `<nav>` 从 `<head>` 移到 `<body>`
+   - `<footer>` 和 `<script>` 移入 `<body>` 内部
+
+5. **拆分 load.js**
+   - 原来 `load.js` 混了章节页加载逻辑和主页 Markdown 渲染逻辑
+   - 主页 Markdown 渲染移回 `index.html`
+   - `load.js` 只保留章节页的 `loadModule()`
+
+6. **最终结构**
+   - CSS/JS 分离，各页面职责明确，目录干净

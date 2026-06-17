@@ -1,0 +1,33 @@
+body {
+    width: 90%;
+    max-width: auto;
+    margin: 2em auto;
+    font: .9em/1.2 Arial, Helvetica, sans-serif;
+}
+.gallery-container {
+    column-count: 4;
+    column-gap: 20px;
+}
+
+.gallery-container > div {
+    break-inside: avoid;
+    margin-bottom: 4px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.gallery-container > div img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .gallery-container { column-count: 3; }
+}
+
+@media (max-width: 480px) {
+    .gallery-container { column-count: 2; }
+}
+ 
