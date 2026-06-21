@@ -1,11 +1,10 @@
-function createGallery(containerId, options = {}) {
+function createGallery(containerId, options = {}) {    
     const {
         total = 0,
         ext = '.webp',
         folder = 'img/output/',
         altPrefix = '图片 '
     } = options;
-
     const container = document.getElementById(containerId);
     if (!container) return;
 
