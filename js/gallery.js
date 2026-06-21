@@ -1,6 +1,6 @@
 function createGallery(containerId, options = {}) {
     const {
-        total = 10,
+        total = 0,
         ext = '.webp',
         folder = 'img/output/',
         altPrefix = '图片 '
