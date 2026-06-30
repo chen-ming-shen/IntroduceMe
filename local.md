@@ -30,4 +30,4 @@
 - 删除 `img/output/a`
 
 【日记】
-- 更新 local.md
+- 更新 local.md，将7月1日与6月30日日记整合展示
