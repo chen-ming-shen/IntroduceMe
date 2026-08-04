@@ -1,33 +1,144 @@
-=== 2026-06-30 日记整理 ===
+# 2026年7月22日
 
-【日常】
-- 休息了几天，正式放暑假
-- 晚上11:45写下这篇日记
-- 已熟悉在父母店里帮忙的流程，感觉很舒服，有大量自由时间
+完成了 C 语言第 15 章的全部编程练习题。  
+这是最后一道，功能与上一题相同，改用 `unsigned long` 和按位运算符管理字体信息，用了自动排版。
 
-【月度总结】
-- 今天是6月日记结尾，庆贺6月日记完成
-- 虽有大量日期缺失，但不论如何算完成了6月目标
+```c
+// 编写一个与编程练习6功能相同的程序，使用 unsigned long 类型的变量储存字体信息，
+// 并且使用按位运算符而不是位成员来管理这些信息。
+#include <stdlib.h>
+#include <stdio.h>
 
-【7月目标】
-- 继续C语言学习
-- 继续Web学习
+#define ID                8
+#define SIZE              7
+#define BOLD              1
+#define ITALIC            1
+#define UNDERLINE         1
+#define ALIGNMENT         2
+#define OFFSETS_ID        0
+#define OFFSETS_SIZE      (OFFSETS_ID + ID)
+#define OFFSETS_ITALIC    (OFFSETS_BOLD + BOLD)
+#define OFFSETS_ALIGNMENT (OFFSETS_SIZE + SIZE)
+#define OFFSETS_UNDERLINE (OFFSETS_ITALIC + ITALIC)
+#define OFFSETS_BOLD      (OFFSETS_ALIGNMENT + ALIGNMENT)
 
----
-### ７月加油！
+//    unsigned long font_data
+//    Total size 64 bit
+//    Use of space 20 bit
 
+const char *alignment_word[] = {"left", "center", "right"};
+const char *font_switch[]    = {"off", "on"};
 
-=== 2026-07-01 日记整理 ===
+int font_data_manipulation(unsigned long *data_font,
+                           int data,
+                           int bits,
+                           int offset,
+                           int read_and_write) {
+    unsigned long mask = (0x1UL << bits) - 1;
 
-【网站更新】
-- 优化画廊加载流畅度，随屏幕尺寸动态调整列数（gallery.css）
-- 修改最小列数为2（gallery.css）
-- 新增图片 #49~63（gallery.html）
-- 画廊加入动态加载功能（gallery.js）
-- 视频格式转换脚本从 `img/` 移至 `video/` 目录
+    if (offset > 0) {
+        mask = mask << offset;
+    }
 
-【清理】
-- 删除 `img/output/a`
+    if (read_and_write) {
+        unsigned long value = (unsigned long)data & ((0x1UL << bits) - 1);
+        (*data_font) = ((*data_font) & ~mask);
+        (*data_font) = (*data_font) | (value << offset);
 
-【日记】
-- 更新 local.md，将7月1日与6月30日日记整合展示
+        return 1;
+    } else {
+        return (int)(((*data_font) & mask) >> offset);
+    }
+}
+
+void clear_input_buffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
+}
+
+int main(void) {
+    unsigned long font_data = 0;
+
+    while (1) {
+        printf("\nID  SIZE ALIGNMENT   B    I    U\n");
+
+        printf("%-2d  %-4d %-6s    %-4s %-4s %-4s\n\n",
+               font_data_manipulation(&font_data, 0, ID, OFFSETS_ID, 0),
+               font_data_manipulation(&font_data, 0, SIZE, OFFSETS_SIZE, 0),
+               alignment_word[font_data_manipulation(&font_data, 0, ALIGNMENT, OFFSETS_ALIGNMENT, 0)],
+               font_switch[font_data_manipulation(&font_data, 0, BOLD, OFFSETS_BOLD, 0)],
+               font_switch[font_data_manipulation(&font_data, 0, ITALIC, OFFSETS_ITALIC, 0)],
+               font_switch[font_data_manipulation(&font_data, 0, UNDERLINE, OFFSETS_UNDERLINE, 0)]);
+
+        printf("f)change font    s)change size    a)change alignment\n");
+        printf("b)toggle bold    i)toggle italic  u)toggle underline\n");
+        printf("q)quit\n");
+
+        char input[3];
+        fgets(input, sizeof(input), stdin);
+        clear_input_buffer();
+
+        switch (input[0]) {
+            case 'f': {
+                char buf[8];
+                printf("Enter font id (0-255): ");
+                fgets(buf, sizeof(buf), stdin);
+                clear_input_buffer();
+
+                int i = atoi(buf);
+                font_data_manipulation(&font_data, i, ID, OFFSETS_ID, 1);
+                break;
+            }
+            case 's': {
+                char buf[8];
+                printf("Enter font size (0-127): ");
+                fgets(buf, sizeof(buf), stdin);
+                clear_input_buffer();
+
+                int i = atoi(buf);
+                font_data_manipulation(&font_data, i, SIZE, OFFSETS_SIZE, 1);
+                break;
+            }
+            case 'a': {
+                char buf[4];
+                printf("Select alignment:\nl)left  c)center  r)right\n");
+                fgets(buf, sizeof(buf), stdin);
+                clear_input_buffer();
+
+                if (buf[0] == 'l') {
+                    font_data_manipulation(&font_data, 0, ALIGNMENT, OFFSETS_ALIGNMENT, 1);
+                } else if (buf[0] == 'c') {
+                    font_data_manipulation(&font_data, 1, ALIGNMENT, OFFSETS_ALIGNMENT, 1);
+                } else if (buf[0] == 'r') {
+                    font_data_manipulation(&font_data, 2, ALIGNMENT, OFFSETS_ALIGNMENT, 1);
+                } else {
+                    printf("Invalid choice!\n");
+                }
+                break;
+            }
+            case 'b': {
+                int current = font_data_manipulation(&font_data, 0, BOLD, OFFSETS_BOLD, 0);
+                font_data_manipulation(&font_data, !current, BOLD, OFFSETS_BOLD, 1);
+                break;
+            }
+            case 'i': {
+                int current = font_data_manipulation(&font_data, 0, ITALIC, OFFSETS_ITALIC, 0);
+                font_data_manipulation(&font_data, !current, ITALIC, OFFSETS_ITALIC, 1);
+                break;
+            }
+            case 'u': {
+                int current = font_data_manipulation(&font_data, 0, UNDERLINE, OFFSETS_UNDERLINE, 0);
+                font_data_manipulation(&font_data, !current, UNDERLINE, OFFSETS_UNDERLINE, 1);
+                break;
+            }
+            case 'q':
+                return 0;
+            default:
+                printf("Invalid input!\n");
+        }
+    }
+
+    return 0;
+}
+```

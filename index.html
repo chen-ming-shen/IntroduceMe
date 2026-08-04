@@ -1,51 +1,43 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
- <head>
+<head>
   <meta charset="UTF-8">
   <meta name="color-scheme" content="only light">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="/css/index.css">
- </head>
-<div class="navigation-bar">
-<a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/CSS_layout/Positioning">教程</a>
-<a href="novel.html">轻小说</a>
-<a href="gallery.html">画廊</a>
-</div>
-<p>内容</p>
-</body>
-<video src="video/心予報—布伦妮.mp4" controls width="300">
-  视频不见啦！
-</video>
-<br>
-<video src="video/0.mp4" controls width="300">
-  视频不见啦！
-</video>
-<br>
-<video src="video/1.mp4" controls width="300">
-  视频不见啦！
-</video>
-<br>
-<div id="content">正在加载中，请稍等～</div>
+  
+  <title>我的网站</title>
+</head>
+
+<body>
+  <div class="navigation-bar">
+    <ul id="navigation-bar">
+      <li>
+        <a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/CSS_layout/Positioning">
+          教程
+        </a>
+      </li>
+      <li><a href="novel.html">轻小说</a></li>
+      <li><a href="gallery.html">画廊</a></li>
+      <li><a href="web_tutorial.html">web学习</a></li>
+    </ul>
+  </div>
+
+  <div id="content">正在加载中，请稍等～</div>
+  
   <footer>
-  <div class="footer">
-        <p style="text-align: right;">© 2026 (CMS) 保留所有权利</p>
-        <p style="text-align: right;">注：网站解释权归开发者所有</p>
-        <p style="text-align: right;">开发者：cms</p>
+    <div class="footer">
+      <p style="text-align: center;">© 2026 (CMS) 保留所有权利</p>
     </div>
   </footer>
+  
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    fetch('./local.md')
-      .then(res => {
-        if (!res.ok) throw new Error('文件读取失败');
-        return res.text();
-      })
-      .then(md => {
-        document.getElementById('content').innerHTML = marked.parse(md);
-      })
-      .catch(err => {
-        document.getElementById('content').innerHTML = `<p style="color:red;">加载失败：${err.message}</p>`;
-      });
+  <script type="module" src="/js/article_loading.js"></script>
+  <script type="module">
+    import { load_article } from '/js/article_loading.js';
+    load_article('./local.md', 'content');
   </script>
- </body>
+</script>
+
+</body>
 </html>

@@ -1,23 +1,68 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>画廊</title>
-    <link rel="stylesheet" href="css/gallery.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画廊</title>
+  <link rel="stylesheet" href="css/gallery.css">
 </head>
 <body>
-    <h1>个人收藏</h1>
-    <br>
-    <a href="./index.html">返回</a>
-    <div class="gallery-container" id="gallery"></div>
 
-    <script src="js/gallery.js"></script>
-    <script>
-        createGallery('gallery', {
-            total: 64
+  <h1>个人收藏</h1>
+  <br>
+  <a href="./index.html">← 返回</a>
+
+  <div id="date-buttons"></div>
+  <br>
+
+  <div class="gallery-container" id="gallery"></div>
+
+  <script src="js/gallery.js"></script>
+
+  <!--
+    img/gallery/gallery.json 维护说明
+    在 img/gallery/ 下新建文件夹，文件从 0 开始命名，使用 .webp 后缀。
+    在 gallery.json 最上方添加：
+    { "date": "文件夹名字", "quantity": 文件数量 }
+  -->
+  <script>
+  (async function() {
+    const container = document.getElementById('date-buttons');
+    try {
+      // const resp = await fetch('img/gallery/gallery.json');
+      const resp = await fetch('img/gallery/gallery.json');
+          /*
+           * 高清目录 download
+           * 原本 gallery
+           */
+      const list = await resp.json();
+
+      list.forEach(({ date, quantity }) => {
+        const btn = document.createElement('button');
+        btn.className = 'date-btn';
+        btn.textContent = date;
+        btn.addEventListener('click', () => {
+          createGallery('gallery', {
+            total: quantity,
+            ext: '.webp',
+            folder: `img/gallery/${date}/`
+          });
+          /*
+           * 高清目录 download
+           * 原本 gallery
+           */
         });
-    </script>
+        container.appendChild(btn);
+      });
+
+      const firstBtn = container.querySelector('.date-btn');
+      if (firstBtn) firstBtn.click();
+
+    } catch (e) {
+      container.textContent = '加载失败，请检查 gallery.json';
+    }
+  })();
+  </script>
+  <script src="js/image-viewer.min.js"></script>
 </body>
 </html>
-

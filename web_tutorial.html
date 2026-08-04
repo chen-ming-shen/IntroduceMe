@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="only light">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="/css/index.css">
+  <style>
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="navigation-bar">
+    <ul id="navigation-bar">
+      <li><a href="#" id="choice">主页</a></li>
+      <li><a href="https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Core/Scripting/JSON">学习进度</a></li>
+      <li><a href="#" id="history-link">历史</a></li>
+      <li><a href="index.html">返回</a></li>
+      <li><a href="#">占位</a></li>
+    </ul>
+  </div>
+
+  <div id="main-content"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script type="module" src="/js/article_loading.js"></script>
+  <script type="module">
+    import { load_article } from '/js/article_loading.js';
+
+    document.querySelector('#choice').addEventListener('click', (e) => {
+        e.preventDefault();
+        load_article('/README.md', 'main-content');
+    });
+    document.querySelector('#history-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        load_article('/local.md', 'main-content');
+    });
+    load_article('/README.md', 'main-content');
+  </script>
+</body>
+</html>
