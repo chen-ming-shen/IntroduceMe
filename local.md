@@ -1,144 +1,29 @@
-# 2026年7月22日
+=== 2026-08-21 日记整理 ===
 
-完成了 C 语言第 15 章的全部编程练习题。  
-这是最后一道，功能与上一题相同，改用 `unsigned long` 和按位运算符管理字体信息，用了自动排版。
+【日常】
+- 已有5天没有做任何事，好好放纵一周
+- 即将开学，意识到在学校需要自控力
 
-```c
-// 编写一个与编程练习6功能相同的程序，使用 unsigned long 类型的变量储存字体信息，
-// 并且使用按位运算符而不是位成员来管理这些信息。
-#include <stdlib.h>
-#include <stdio.h>
+【分析与思考】
+- 技校课程与机械制造相关，和自学方向关系不大
+- 班级学习氛围有限，宿舍嘈杂
+- 今年换宿舍，尚不了解舍友习惯
 
-#define ID                8
-#define SIZE              7
-#define BOLD              1
-#define ITALIC            1
-#define UNDERLINE         1
-#define ALIGNMENT         2
-#define OFFSETS_ID        0
-#define OFFSETS_SIZE      (OFFSETS_ID + ID)
-#define OFFSETS_ITALIC    (OFFSETS_BOLD + BOLD)
-#define OFFSETS_ALIGNMENT (OFFSETS_SIZE + SIZE)
-#define OFFSETS_UNDERLINE (OFFSETS_ITALIC + ITALIC)
-#define OFFSETS_BOLD      (OFFSETS_ALIGNMENT + ALIGNMENT)
+【设备规划】
+- 平板：安装 Linux 容器作为学习设备
+- 树莓派：部署在宿舍当服务器，跑私密服务项目
+- 平板：作为临时开发平台，周末回家使用
+- 键盘：已有两把（次周键盘灯光坏，入门机械键盘红轴按键力度较大）
+- 平板：打算配鼠标，购买便宜款，自行加片和配重
 
-//    unsigned long font_data
-//    Total size 64 bit
-//    Use of space 20 bit
+【挑战】
+- 10天完成多个C语言项目 demo 的挑战
+- 检验C语言学习能力，作为C语言期末大作业
 
-const char *alignment_word[] = {"left", "center", "right"};
-const char *font_switch[]    = {"off", "on"};
-
-int font_data_manipulation(unsigned long *data_font,
-                           int data,
-                           int bits,
-                           int offset,
-                           int read_and_write) {
-    unsigned long mask = (0x1UL << bits) - 1;
-
-    if (offset > 0) {
-        mask = mask << offset;
-    }
-
-    if (read_and_write) {
-        unsigned long value = (unsigned long)data & ((0x1UL << bits) - 1);
-        (*data_font) = ((*data_font) & ~mask);
-        (*data_font) = (*data_font) | (value << offset);
-
-        return 1;
-    } else {
-        return (int)(((*data_font) & mask) >> offset);
-    }
-}
-
-void clear_input_buffer(void) {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF)
-        ;
-}
-
-int main(void) {
-    unsigned long font_data = 0;
-
-    while (1) {
-        printf("\nID  SIZE ALIGNMENT   B    I    U\n");
-
-        printf("%-2d  %-4d %-6s    %-4s %-4s %-4s\n\n",
-               font_data_manipulation(&font_data, 0, ID, OFFSETS_ID, 0),
-               font_data_manipulation(&font_data, 0, SIZE, OFFSETS_SIZE, 0),
-               alignment_word[font_data_manipulation(&font_data, 0, ALIGNMENT, OFFSETS_ALIGNMENT, 0)],
-               font_switch[font_data_manipulation(&font_data, 0, BOLD, OFFSETS_BOLD, 0)],
-               font_switch[font_data_manipulation(&font_data, 0, ITALIC, OFFSETS_ITALIC, 0)],
-               font_switch[font_data_manipulation(&font_data, 0, UNDERLINE, OFFSETS_UNDERLINE, 0)]);
-
-        printf("f)change font    s)change size    a)change alignment\n");
-        printf("b)toggle bold    i)toggle italic  u)toggle underline\n");
-        printf("q)quit\n");
-
-        char input[3];
-        fgets(input, sizeof(input), stdin);
-        clear_input_buffer();
-
-        switch (input[0]) {
-            case 'f': {
-                char buf[8];
-                printf("Enter font id (0-255): ");
-                fgets(buf, sizeof(buf), stdin);
-                clear_input_buffer();
-
-                int i = atoi(buf);
-                font_data_manipulation(&font_data, i, ID, OFFSETS_ID, 1);
-                break;
-            }
-            case 's': {
-                char buf[8];
-                printf("Enter font size (0-127): ");
-                fgets(buf, sizeof(buf), stdin);
-                clear_input_buffer();
-
-                int i = atoi(buf);
-                font_data_manipulation(&font_data, i, SIZE, OFFSETS_SIZE, 1);
-                break;
-            }
-            case 'a': {
-                char buf[4];
-                printf("Select alignment:\nl)left  c)center  r)right\n");
-                fgets(buf, sizeof(buf), stdin);
-                clear_input_buffer();
-
-                if (buf[0] == 'l') {
-                    font_data_manipulation(&font_data, 0, ALIGNMENT, OFFSETS_ALIGNMENT, 1);
-                } else if (buf[0] == 'c') {
-                    font_data_manipulation(&font_data, 1, ALIGNMENT, OFFSETS_ALIGNMENT, 1);
-                } else if (buf[0] == 'r') {
-                    font_data_manipulation(&font_data, 2, ALIGNMENT, OFFSETS_ALIGNMENT, 1);
-                } else {
-                    printf("Invalid choice!\n");
-                }
-                break;
-            }
-            case 'b': {
-                int current = font_data_manipulation(&font_data, 0, BOLD, OFFSETS_BOLD, 0);
-                font_data_manipulation(&font_data, !current, BOLD, OFFSETS_BOLD, 1);
-                break;
-            }
-            case 'i': {
-                int current = font_data_manipulation(&font_data, 0, ITALIC, OFFSETS_ITALIC, 0);
-                font_data_manipulation(&font_data, !current, ITALIC, OFFSETS_ITALIC, 1);
-                break;
-            }
-            case 'u': {
-                int current = font_data_manipulation(&font_data, 0, UNDERLINE, OFFSETS_UNDERLINE, 0);
-                font_data_manipulation(&font_data, !current, UNDERLINE, OFFSETS_UNDERLINE, 1);
-                break;
-            }
-            case 'q':
-                return 0;
-            default:
-                printf("Invalid input!\n");
-        }
-    }
-
-    return 0;
-}
-```
+【后续计划汇总】
+- 平板刷容器
+- 买鼠标
+- 改造鼠标
+- 搭建树莓派的语言模型后端
+- 完成10天C语言demo马拉松
+- 再次审视自己
